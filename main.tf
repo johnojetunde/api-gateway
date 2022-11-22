@@ -24,9 +24,9 @@ resource "aws_apigatewayv2_route" "stagingv1" {
   target = "integrations/${aws_apigatewayv2_integration.version1-staging-api.id}"
 }
 
-resource "aws_apigatewayv2_stage" "v1" {
+resource "aws_apigatewayv2_stage" "staging" {
   api_id = aws_apigatewayv2_api.example.id
-  name = "v1"
+  name = "staging"
   auto_deploy = true
 
   access_log_settings {
