@@ -42,7 +42,7 @@ resource "aws_apigatewayv2_stage" "v1" {
 //  }
 
   route_settings {
-    route_key = "v1"
+    route_key = "stagingv1"
     data_trace_enabled = true
     detailed_metrics_enabled = true
   }
