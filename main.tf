@@ -30,7 +30,7 @@ resource "aws_apigatewayv2_route" "v1" {
   target = "integrations/${aws_apigatewayv2_integration.v1.id}"
 }
 
-resource "aws_apigatewayv2_stage" "default" {
+resource "aws_apigatewayv2_stage" "v1" {
   api_id = aws_apigatewayv2_api.example.id
   name   = "example-stage"
 
