@@ -15,7 +15,7 @@ resource "aws_apigatewayv2_integration" "v1" {
   integration_type = "HTTP_PROXY"
 
   integration_method = "ANY"
-  integration_uri    = "https://openapi.staging.pleo.io/v1/{proxy}"
+  integration_uri    = "https://openapi.staging.pleo.io/v1/"
 }
 
 resource "aws_apigatewayv2_route" "v1" {
