@@ -26,19 +26,19 @@ resource "aws_apigatewayv2_route" "v1" {
 
 resource "aws_apigatewayv2_stage" "version1" {
   api_id = aws_apigatewayv2_api.example.id
-  name   = "v1"
+  name   = "version1"
   auto_deploy = true
   access_log_settings {
     destination_arn = "arn:aws:logs:eu-west-2:357952334820:log-group:/aws/lambda/jwt-verifier"
     format = "{ \"requestId\":\"$context.requestId\", \"ip\": \"$context.identity.sourceIp\", \"requestTime\":\"$context.requestTime\", \"httpMethod\":\"$context.httpMethod\",\"routeKey\":\"$context.routeKey\", \"status\":\"$context.status\",\"protocol\":\"$context.protocol\", \"responseLength\":\"$context.responseLength\"}"
   }
 
-  default_route_settings {
-//    throttling_burst_limit = 5
-    throttling_rate_limit = 200
-    data_trace_enabled = true
-    detailed_metrics_enabled = true
-  }
+//  default_route_settings {
+////    throttling_burst_limit = 5
+//    throttling_rate_limit = 200
+//    data_trace_enabled = true
+//    detailed_metrics_enabled = true
+//  }
 
 //  route_settings {
 //    route_key = "ANY /v1/{proxy+}"
