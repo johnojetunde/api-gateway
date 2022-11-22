@@ -10,6 +10,11 @@ resource "aws_apigatewayv2_api" "example" {
   protocol_type = "HTTP"
 }
 
+resource "aws_apigatewayv2_stage" "v1" {
+  api_id = aws_apigatewayv2_api.example.id
+  name   = "example-stage"
+}
+
 resource "aws_apigatewayv2_integration" "v1" {
   api_id           = aws_apigatewayv2_api.example.id
   integration_type = "HTTP_PROXY"
