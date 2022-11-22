@@ -25,7 +25,7 @@ resource "aws_apigatewayv2_integration" "v1" {
 
 resource "aws_apigatewayv2_route" "v1" {
   api_id    = aws_apigatewayv2_api.example.id
-  route_key = "ANY /v3"
+  route_key = "ANY /v1"
 
   target = "integrations/${aws_apigatewayv2_integration.v1.id}"
 }
