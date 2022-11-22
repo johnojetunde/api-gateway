@@ -15,13 +15,13 @@ resource "aws_apigatewayv2_integration" "v1" {
   integration_type = "HTTP_PROXY"
 
   integration_method = "ANY"
-  integration_uri    = "https://openapi.staging.pleo.io"
+  integration_uri    = "https://openapi.staging.pleo.io/v1/{proxy}"
 }
 
 resource "aws_apigatewayv2_route" "v1" {
   api_id    = aws_apigatewayv2_api.example.id
   route_key = "ANY /v1/{proxy+}"
-  target = "integrations/${aws_apigatewayv2_integration.v1.id}/v1/{proxy}"
+  target = "integrations/${aws_apigatewayv2_integration.v1.id}"
 }
 
 resource "aws_apigatewayv2_stage" "version1" {
