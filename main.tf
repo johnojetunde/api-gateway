@@ -28,6 +28,10 @@ resource "aws_apigatewayv2_stage" "version1" {
   api_id = aws_apigatewayv2_api.example.id
   name   = "v1"
   auto_deploy = true
+  access_log_settings {
+    destination_arn = "arn:aws:logs:eu-west-2:357952334820:log-group:/aws/lambda/jwt-verifier"
+    format = "JSON"
+  }
 
   default_route_settings {
 //    throttling_burst_limit = 5
@@ -38,5 +42,7 @@ resource "aws_apigatewayv2_stage" "version1" {
 
   route_settings {
     route_key = "$default"
+    data_trace_enabled = true
+    detailed_metrics_enabled = true
   }
 }
