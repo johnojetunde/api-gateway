@@ -15,7 +15,7 @@ resource "aws_apigatewayv2_integration" "v1" {
   integration_type = "HTTP_PROXY"
 
   integration_method = "ANY"
-  integration_uri    = "https://developers.pleo.io/reference/introduction"
+  integration_uri    = "https://developers.pleo.io/reference"
 }
 
 resource "aws_apigatewayv2_route" "v1" {
@@ -25,20 +25,22 @@ resource "aws_apigatewayv2_route" "v1" {
   target = "integrations/${aws_apigatewayv2_integration.v1.id}"
 }
 
-resource "aws_apigatewayv2_stage" "v1" {
+resource "aws_apigatewayv2_stage" "example" {
   api_id = aws_apigatewayv2_api.example.id
-  name   = "example-stage"
+  name   = "default"
+  auto_deploy = true
 
   default_route_settings {
     throttling_burst_limit = 5
     throttling_rate_limit = 5
     data_trace_enabled = true
     detailed_metrics_enabled = true
+
   }
 
-  route_settings {
-    route_key = "ANY /v1"
-    throttling_burst_limit = 5
-    throttling_rate_limit = 5
-  }
+//  route_settings {
+//    route_key = "ANY /v1"
+//    throttling_burst_limit = 5
+//    throttling_rate_limit = 5
+//  }
 }
