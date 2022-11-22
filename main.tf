@@ -40,9 +40,9 @@ resource "aws_apigatewayv2_stage" "version1" {
     detailed_metrics_enabled = true
   }
 
-  route_settings {
-    route_key = "ANY /v1/{proxy+}"
-    data_trace_enabled = true
-    detailed_metrics_enabled = true
-  }
+//  route_settings {
+//    route_key = "ANY /v1/{proxy+}"
+//    data_trace_enabled = true
+//    detailed_metrics_enabled = true
+//  }
 }
