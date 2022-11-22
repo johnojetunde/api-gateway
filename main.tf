@@ -10,17 +10,17 @@ resource "aws_apigatewayv2_api" "example" {
   protocol_type = "HTTP"
 }
 
-resource "aws_apigatewayv2_integration" "example" {
+resource "aws_apigatewayv2_integration" "v1" {
   api_id           = aws_apigatewayv2_api.example.id
   integration_type = "HTTP_PROXY"
 
   integration_method = "ANY"
-  integration_uri    = "https://developers.pleo.io/reference/introduction/{proxy}"
+  integration_uri    = "https://developers.pleo.io/reference/introduction"
 }
 
-resource "aws_apigatewayv2_route" "example" {
+resource "aws_apigatewayv2_route" "v1" {
   api_id    = aws_apigatewayv2_api.example.id
-  route_key = "ANY /example/{proxy+}"
+  route_key = "ANY /v3"
 
-  target = "integrations/${aws_apigatewayv2_integration.example.id}"
+  target = "integrations/${aws_apigatewayv2_integration.v1.id}"
 }
