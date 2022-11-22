@@ -15,7 +15,7 @@ resource "aws_apigatewayv2_integration" "v1" {
   integration_type = "HTTP_PROXY"
 
   integration_method = "ANY"
-  integration_uri    = "https://openapi.staging.pleo.io/v1"
+  integration_uri    = "https://openapi.staging.pleo.io/v1/{proxy}"
 }
 
 resource "aws_apigatewayv2_route" "v1" {
@@ -35,12 +35,6 @@ resource "aws_apigatewayv2_stage" "example" {
     throttling_rate_limit = 5
     data_trace_enabled = true
     detailed_metrics_enabled = true
-
   }
 
-//  route_settings {
-//    route_key = "ANY /v1"
-//    throttling_burst_limit = 5
-//    throttling_rate_limit = 5
-//  }
 }
