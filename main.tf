@@ -36,7 +36,7 @@ resource "aws_apigatewayv2_stage" "default" {
 
   default_route_settings {
     throttling_burst_limit = 5
-    throttling_rate_limit = 5,
+    throttling_rate_limit = 5
     data_trace_enabled = true
     detailed_metrics_enabled = true
   }
