@@ -30,7 +30,7 @@ resource "aws_apigatewayv2_stage" "version1" {
   auto_deploy = true
   access_log_settings {
     destination_arn = "arn:aws:logs:eu-west-2:357952334820:log-group:/aws/lambda/jwt-verifier"
-    format = "JSON"
+    format = "{ \"requestId\":\"$context.requestId\", \"ip\": \"$context.identity.sourceIp\", \"requestTime\":\"$context.requestTime\", \"httpMethod\":\"$context.httpMethod\",\"routeKey\":\"$context.routeKey\", \"status\":\"$context.status\",\"protocol\":\"$context.protocol\", \"responseLength\":\"$context.responseLength\"}"
   }
 
   default_route_settings {
