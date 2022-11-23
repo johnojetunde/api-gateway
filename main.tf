@@ -49,6 +49,6 @@ resource "aws_apigatewayv2_authorizer" "api-gateway-authorizer" {
   identity_sources = ["$request.header.Authorization"]
 
  jwt_configuration {
-   issuer = "pleo.openapi.staging"
+   issuer = "https://pleo.openapi.staging"
  }
 }
