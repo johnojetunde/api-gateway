@@ -105,3 +105,4 @@ resource "aws_cloudwatch_log_group" "lambda_jwt_verifier" {
 
   retention_in_days = 30
 }
+
