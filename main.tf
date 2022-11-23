@@ -44,35 +44,35 @@ resource "aws_apigatewayv2_stage" "staging" {
 
 data "aws_caller_identity" "current_user" {}
 
-resource "aws_s3_bucket" "lambda_jwt_bucket" {
-  bucket = "johnojetunde-my-tf-test-bucket-2022"
-
-  tags = {
-    Name        = "My bucket"
-    Environment = "Dev"
-  }
-}
-
-resource "aws_s3_bucket_acl" "lambda_jwt_bucket_acl" {
-  bucket = aws_s3_bucket.lambda_jwt_bucket.id
-  acl    = "private"
-}
-
-resource "aws_s3_object" "lambda_jwt_verifier" {
-  bucket = aws_s3_bucket.lambda_jwt_bucket.id
-
-  key    = "jwt-verifier.zip"
-  source = "${path.module}/jwt-verifier.zip"
-
-  etag = filemd5("${path.module}/jwt-verifier.zip")
-}
+//resource "aws_s3_bucket" "lambda_jwt_bucket" {
+//  bucket = "johnojetunde-my-tf-test-bucket-2022"
+//
+//  tags = {
+//    Name        = "My bucket"
+//    Environment = "Dev"
+//  }
+//}
+//
+//resource "aws_s3_bucket_acl" "lambda_jwt_bucket_acl" {
+//  bucket = aws_s3_bucket.lambda_jwt_bucket.id
+//  acl    = "private"
+//}
+//
+//resource "aws_s3_object" "lambda_jwt_verifier" {
+//  bucket = aws_s3_bucket.lambda_jwt_bucket.id
+//
+//  key    = "jwt-verifier.zip"
+//  source = "${path.module}/jwt-verifier.zip"
+//
+//  etag = filemd5("${path.module}/jwt-verifier.zip")
+//}
 
 
 resource "aws_lambda_function" "lambda_jwt_verifier" {
   function_name = "LambdaJwtVerifier"
 
-  s3_bucket = aws_s3_bucket.lambda_jwt_bucket.id
-  s3_key    = aws_s3_object.lambda_jwt_verifier.key
+  s3_bucket = "lamda-jwt-verifier"
+  s3_key    = "jwt-verifier.zip"
 
   runtime = "nodejs12.x"
   handler = "index.handler"
