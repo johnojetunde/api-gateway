@@ -42,14 +42,76 @@ resource "aws_apigatewayv2_stage" "staging" {
   }
 }
 
-resource "aws_apigatewayv2_authorizer" "api-gateway-authorizer" {
-  api_id = aws_apigatewayv2_api.example.id
-  authorizer_type = "JWT"
-  name = "example-authorizer"
-  identity_sources = ["$request.header.Authorization"]
+resource "aws_s3_bucket" "lambda_bucket" {
+  bucket = "my-tf-test-bucket"
 
-  //.well-known/jwks.json
- jwt_configuration {
-   issuer = "https://auth.staging.pleo.io/"
- }
+  tags = {
+    Name        = "My bucket"
+    Environment = "Dev"
+  }
+}
+
+resource "aws_s3_bucket_acl" "lambda_bucket" {
+  bucket = aws_s3_bucket.lambda_bucket.id
+  acl    = "private"
+}
+
+data "archive_file" "lambda_jwt_verifier" {
+  type = "zip"
+
+  source_dir  = "${path.module}/jwt-verifier"
+  output_path = "${path.module}/jwt-verifier.zip"
+}
+
+
+resource "aws_s3_object" "lambda_jwt_verifier" {
+  bucket = aws_s3_bucket.lambda_bucket.id
+
+  key    = "jwt-verifier.zip"
+  source = data.archive_file.lambda_jwt_verifier.output_path
+
+  etag = filemd5(data.archive_file.lambda_jwt_verifier.output_path)
+}
+
+
+resource "aws_lambda_function" "lambda_jwt_verifier" {
+  function_name = "HelloWorld"
+
+  s3_bucket = aws_s3_bucket.lambda_bucket.id
+  s3_key    = aws_s3_object.lambda_jwt_verifier.key
+
+  runtime = "nodejs12.x"
+  handler = "index.handler"
+
+  source_code_hash = data.archive_file.lambda_jwt_verifier.output_base64sha256
+
+  role = aws_iam_role.lambda_exec.arn
+}
+
+resource "aws_cloudwatch_log_group" "lambda_jwt_verifier" {
+  name = "/aws/lambda/${aws_lambda_function.lambda_jwt_verifier.function_name}"
+
+  retention_in_days = 30
+}
+
+resource "aws_iam_role" "lambda_exec" {
+  name = "serverless_lambda"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Sid    = ""
+      Principal = {
+        Service = "lambda.amazonaws.com"
+      }
+    }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_policy" {
+  role       = aws_iam_role.lambda_exec.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
