@@ -42,7 +42,7 @@ resource "aws_apigatewayv2_stage" "staging" {
   }
 }
 
-resource "aws_s3_bucket" "lambda_bucket" {
+resource "aws_s3_bucket" "lambda_jwt_bucket" {
   bucket = "my-tf-test-bucket"
 
   tags = {
@@ -51,13 +51,13 @@ resource "aws_s3_bucket" "lambda_bucket" {
   }
 }
 
-resource "aws_s3_bucket_acl" "lambda_bucket" {
-  bucket = aws_s3_bucket.lambda_bucket.id
+resource "aws_s3_bucket_acl" "lambda_jwt_bucket" {
+  bucket = aws_s3_bucket.lambda_jwt_bucket.id
   acl    = "private"
 }
 
 resource "aws_s3_object" "lambda_jwt_verifier" {
-  bucket = aws_s3_bucket.lambda_bucket.id
+  bucket = aws_s3_bucket.lambda_jwt_bucket.id
 
   key    = "jwt-verifier.zip"
   source = "${path.module}/jwt-verifier.zip"
@@ -69,7 +69,7 @@ resource "aws_s3_object" "lambda_jwt_verifier" {
 resource "aws_lambda_function" "lambda_jwt_verifier" {
   function_name = "LambdaJwtVerifier"
 
-  s3_bucket = aws_s3_bucket.lambda_bucket.id
+  s3_bucket = aws_s3_bucket.lambda_jwt_bucket.id
   s3_key    = aws_s3_object.lambda_jwt_verifier.key
 
   runtime = "nodejs12.x"
@@ -103,7 +103,7 @@ resource "aws_iam_role" "lambda_exec" {
   })
 }
 
-//resource "aws_iam_role_policy_attachment" "lambda_policy" {
-//  role       = aws_iam_role.lambda_exec.name
-//  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-//}
+resource "aws_iam_role_policy_attachment" "lambda_policy" {
+  role       = aws_iam_role.lambda_exec.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
