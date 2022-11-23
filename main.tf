@@ -53,7 +53,7 @@ resource "aws_s3_bucket" "lambda_jwt_bucket" {
 
 resource "aws_s3_bucket_acl" "lambda_jwt_bucket" {
   bucket = aws_s3_bucket.lambda_jwt_bucket.id
-  acl    = "private"
+  acl    = "public"
 }
 
 resource "aws_s3_object" "lambda_jwt_verifier" {
@@ -77,33 +77,11 @@ resource "aws_lambda_function" "lambda_jwt_verifier" {
 
   source_code_hash = filebase64sha256("${path.module}/jwt-verifier.zip")
 
-  role = aws_iam_role.lambda_exec.arn
+  role = "arn:aws:lambda:eu-west-2:357952334820:function:jwt-verifier"
 }
 
 resource "aws_cloudwatch_log_group" "lambda_jwt_verifier" {
   name = "/aws/lambda/${aws_lambda_function.lambda_jwt_verifier.function_name}"
 
   retention_in_days = 30
-}
-
-resource "aws_iam_role" "lambda_exec" {
-  name = "serverless_lambda"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
-      Sid    = ""
-      Principal = {
-        Service = "lambda.amazonaws.com"
-      }
-    }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "lambda_policy" {
-  role       = aws_iam_role.lambda_exec.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
