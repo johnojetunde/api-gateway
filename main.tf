@@ -45,7 +45,7 @@ resource "aws_apigatewayv2_stage" "staging" {
 data "aws_caller_identity" "current_user" {}
 
 resource "aws_s3_bucket" "lambda_jwt_bucket" {
-  bucket = "my-tf-test-bucket"
+  bucket = "johnojetunde-my-tf-test-bucket-2022"
 
   tags = {
     Name        = "My bucket"
