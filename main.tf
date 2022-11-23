@@ -56,21 +56,13 @@ resource "aws_s3_bucket_acl" "lambda_bucket" {
   acl    = "private"
 }
 
-data "archive_file" "lambda_jwt_verifier" {
-  type = "zip"
-
-  source_dir  = "${path.module}/jwt-verifier"
-  output_path = "${path.module}/jwt-verifier.zip"
-}
-
-
 resource "aws_s3_object" "lambda_jwt_verifier" {
   bucket = aws_s3_bucket.lambda_bucket.id
 
   key    = "jwt-verifier.zip"
-  source = data.archive_file.lambda_jwt_verifier.output_path
+  source = "${path.module}/jwt-verifier.zip"
 
-  etag = filemd5(data.archive_file.lambda_jwt_verifier.output_path)
+  etag = filemd5("${path.module}/jwt-verifier.zip")
 }
 
 
