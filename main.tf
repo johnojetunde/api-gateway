@@ -43,7 +43,7 @@ resource "aws_apigatewayv2_stage" "staging" {
 }
 
 resource "aws_s3_bucket" "lambda_jwt_bucket" {
-  bucket = "my-tf-test-bucket"
+  bucket = "johnojetunde-my-tf-test-bucket-2022"
 
   tags = {
     Name        = "My bucket"
