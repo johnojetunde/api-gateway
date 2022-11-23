@@ -45,19 +45,17 @@ resource "aws_apigatewayv2_stage" "staging" {
 data "aws_caller_identity" "current_user" {}
 
 resource "aws_s3_bucket" "lambda_jwt_bucket" {
-  bucket = "johnojetunde-my-tf-test-bucket-2022"
+  bucket = "my-tf-test-bucket"
 
-  grant {
-    id          = data.aws_caller_identity.current_user.user_id
-    type        = "CanonicalUser"
-    permissions = ["FULL_CONTROL"]
+  tags = {
+    Name        = "My bucket"
+    Environment = "Dev"
   }
+}
 
-  grant {
-    type        = "Group"
-    permissions = ["READ_ACP", "WRITE"]
-    uri         = "http://acs.amazonaws.com/groups/s3/LogDelivery"
-  }
+resource "aws_s3_bucket_acl" "lambda_jwt_bucket_acl" {
+  bucket = aws_s3_bucket.lambda_jwt_bucket.id
+  acl    = "private"
 }
 
 resource "aws_s3_object" "lambda_jwt_verifier" {
