@@ -52,14 +52,14 @@ resource "aws_s3_bucket" "lambda_jwt_bucket" {
   }
 }
 
-//resource "aws_s3_object" "lambda_jwt_verifier" {
-//  bucket = aws_s3_bucket.lambda_jwt_bucket.id
-//
-//  key    = "jwt-verifier.zip"
-//  source = "${path.module}/jwt-verifier.zip"
-//
-//  etag = filemd5("${path.module}/jwt-verifier.zip")
-//}
+resource "aws_s3_object" "lambda_jwt_verifier" {
+  bucket = aws_s3_bucket.lambda_jwt_bucket.id
+
+  key    = "jwt-verifier.zip"
+  source = "${path.module}/jwt-verifier.zip"
+
+  etag = filemd5("${path.module}/jwt-verifier.zip")
+}
 //
 //
 //resource "aws_lambda_function" "lambda_jwt_verifier" {
