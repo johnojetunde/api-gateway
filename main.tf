@@ -67,24 +67,41 @@ data "aws_caller_identity" "current_user" {}
 //  etag = filemd5("${path.module}/jwt-verifier.zip")
 //}
 
-resource "aws_iam_role" "lambda_role" {
-  name = "lambda_role"
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "lambda.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
+data "aws_iam_policy_document" "assume_role" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
     }
-  ]
+  }
 }
-EOF
+
+resource "aws_iam_role" "lambda" {
+  name                  = "yo"
+  assume_role_policy    = data.aws_iam_policy_document.assume_role.json
 }
+
+//resource "aws_iam_role" "lambda_role" {
+//  name = "lambda_role"
+//  assume_role_policy = <<EOF
+//{
+//  "Version": "2012-10-17",
+//  "Statement": [
+//    {
+//      "Action": "sts:AssumeRole",
+//      "Principal": {
+//        "Service": "lambda.amazonaws.com"
+//      },
+//      "Effect": "Allow",
+//      "Sid": ""
+//    }
+//  ]
+//}
+//EOF
+//}
 
 resource "aws_lambda_function" "lambda_jwt_verifier" {
   function_name = "LambdaJwtVerifier"
@@ -97,7 +114,7 @@ resource "aws_lambda_function" "lambda_jwt_verifier" {
 
   source_code_hash = filebase64sha256("${path.module}/jwt-verifier.zip")
 
-  role = aws_iam_role.lambda_role.arn
+  role = aws_iam_role.lambda.arn
 }
 
 resource "aws_cloudwatch_log_group" "lambda_jwt_verifier" {
