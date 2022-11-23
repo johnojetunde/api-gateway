@@ -53,7 +53,6 @@ resource "aws_s3_bucket" "lambda_jwt_bucket" {
 
 resource "aws_s3_bucket_acl" "lambda_jwt_bucket" {
   bucket = aws_s3_bucket.lambda_jwt_bucket.id
-  acl    = "public"
 }
 
 resource "aws_s3_object" "lambda_jwt_verifier" {
