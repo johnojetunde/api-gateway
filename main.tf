@@ -40,6 +40,15 @@ resource "aws_apigatewayv2_stage" "staging" {
     data_trace_enabled = true
     detailed_metrics_enabled = true
   }
+}
 
+resource "aws_apigatewayv2_authorizer" "api-gateway-authorizer" {
+  api_id = aws_apigatewayv2_api.example.id
+  authorizer_type = "JWT"
+  name = "example-authorizer"
+  identity_sources = ["$request.header.Authorization"]
 
+ jwt_configuration {
+   issuer = "pleo.openapi.staging"
+ }
 }
