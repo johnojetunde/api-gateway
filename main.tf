@@ -67,7 +67,6 @@ data "aws_caller_identity" "current_user" {}
 //  etag = filemd5("${path.module}/jwt-verifier.zip")
 //}
 
-
 resource "aws_lambda_function" "lambda_jwt_verifier" {
   function_name = "LambdaJwtVerifier"
 
