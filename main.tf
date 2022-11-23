@@ -42,8 +42,16 @@ resource "aws_apigatewayv2_stage" "staging" {
   }
 }
 
+data "aws_caller_identity" "current_user" {}
+
 resource "aws_s3_bucket" "lambda_jwt_bucket" {
   bucket = "johnojetunde-my-tf-test-bucket-2022"
+
+  grant {
+    id          = data.aws_caller_identity.current_user.user_id
+    type        = "CanonicalUser"
+    permissions = ["FULL_CONTROL"]
+  }
 
   grant {
     type        = "Group"
@@ -60,24 +68,24 @@ resource "aws_s3_object" "lambda_jwt_verifier" {
 
   etag = filemd5("${path.module}/jwt-verifier.zip")
 }
-//
-//
-//resource "aws_lambda_function" "lambda_jwt_verifier" {
-//  function_name = "LambdaJwtVerifier"
-//
-//  s3_bucket = aws_s3_bucket.lambda_jwt_bucket.id
-//  s3_key    = aws_s3_object.lambda_jwt_verifier.key
-//
-//  runtime = "nodejs12.x"
-//  handler = "index.handler"
-//
-//  source_code_hash = filebase64sha256("${path.module}/jwt-verifier.zip")
-//
-//  role = "arn:aws:lambda:eu-west-2:357952334820:function:jwt-verifier"
-//}
-//
-//resource "aws_cloudwatch_log_group" "lambda_jwt_verifier" {
-//  name = "/aws/lambda/${aws_lambda_function.lambda_jwt_verifier.function_name}"
-//
-//  retention_in_days = 30
-//}
+
+
+resource "aws_lambda_function" "lambda_jwt_verifier" {
+  function_name = "LambdaJwtVerifier"
+
+  s3_bucket = aws_s3_bucket.lambda_jwt_bucket.id
+  s3_key    = aws_s3_object.lambda_jwt_verifier.key
+
+  runtime = "nodejs12.x"
+  handler = "index.handler"
+
+  source_code_hash = filebase64sha256("${path.module}/jwt-verifier.zip")
+
+  role = "arn:aws:lambda:eu-west-2:357952334820:function:jwt-verifier"
+}
+
+resource "aws_cloudwatch_log_group" "lambda_jwt_verifier" {
+  name = "/aws/lambda/${aws_lambda_function.lambda_jwt_verifier.function_name}"
+
+  retention_in_days = 30
+}
