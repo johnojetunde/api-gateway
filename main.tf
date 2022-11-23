@@ -48,7 +48,8 @@ resource "aws_apigatewayv2_authorizer" "api-gateway-authorizer" {
   name = "example-authorizer"
   identity_sources = ["$request.header.Authorization"]
 
+  //.well-known/jwks.json
  jwt_configuration {
-   issuer = "https://auth.staging.pleo.io/.well-known/jwks.json"
+   issuer = "https://auth.staging.pleo.io/"
  }
 }
