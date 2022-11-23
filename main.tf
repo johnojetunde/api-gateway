@@ -67,6 +67,25 @@ data "aws_caller_identity" "current_user" {}
 //  etag = filemd5("${path.module}/jwt-verifier.zip")
 //}
 
+resource "aws_iam_role" "lambda_role" {
+  name = "lambda_role"
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+}
+
 resource "aws_lambda_function" "lambda_jwt_verifier" {
   function_name = "LambdaJwtVerifier"
 
@@ -78,7 +97,7 @@ resource "aws_lambda_function" "lambda_jwt_verifier" {
 
   source_code_hash = filebase64sha256("${path.module}/jwt-verifier.zip")
 
-  role = "arn:aws:lambda:eu-west-2:357952334820:function:jwt-verifier"
+  role = aws_iam_role.lambda_role.arn
 }
 
 resource "aws_cloudwatch_log_group" "lambda_jwt_verifier" {
