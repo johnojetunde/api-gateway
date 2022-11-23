@@ -42,16 +42,8 @@ resource "aws_apigatewayv2_stage" "staging" {
   }
 }
 
-data "aws_canonical_user_id" "current_user" {}
-
 resource "aws_s3_bucket" "lambda_jwt_bucket" {
   bucket = "johnojetunde-my-tf-test-bucket-2022"
-
-  grant {
-    id          = data.aws_canonical_user_id.current_user.id
-    type        = "CanonicalUser"
-    permissions = ["FULL_CONTROL"]
-  }
 
   grant {
     type        = "Group"
