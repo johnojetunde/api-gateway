@@ -42,17 +42,22 @@ resource "aws_apigatewayv2_stage" "staging" {
   }
 }
 
+data "aws_canonical_user_id" "current_user" {}
+
 resource "aws_s3_bucket" "lambda_jwt_bucket" {
   bucket = "johnojetunde-my-tf-test-bucket-2022"
 
-  tags = {
-    Name        = "My bucket"
-    Environment = "Dev"
+  grant {
+    id          = data.aws_canonical_user_id.current_user.id
+    type        = "CanonicalUser"
+    permissions = ["FULL_CONTROL"]
   }
-}
 
-resource "aws_s3_bucket_acl" "lambda_jwt_bucket" {
-  bucket = aws_s3_bucket.lambda_jwt_bucket.id
+  grant {
+    type        = "Group"
+    permissions = ["READ_ACP", "WRITE"]
+    uri         = "http://acs.amazonaws.com/groups/s3/LogDelivery"
+  }
 }
 
 resource "aws_s3_object" "lambda_jwt_verifier" {
